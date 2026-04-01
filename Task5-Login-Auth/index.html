@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AuthFlow – Login Authentication</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- ========== LOGIN PAGE ========== -->
+  <div class="auth-page active" id="page-login">
+    <div class="auth-left">
+      <div class="brand">Auth<span>Flow</span></div>
+      <h1>Welcome Back!</h1>
+      <p>Sign in to access your secure dashboard</p>
+
+      <div class="form-box">
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="login-email" placeholder="you@example.com" oninput="clearError('login-error')"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="login-pass" placeholder="••••••••" oninput="clearError('login-error')"/>
+            <button class="toggle-pass" onclick="togglePassword('login-pass', this)">👁</button>
+          </div>
+        </div>
+
+        <div class="error-msg" id="login-error"></div>
+
+        <div class="remember-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-me"/>
+            <span>Remember me</span>
+          </label>
+          <a class="forgot-link" onclick="showPage('forgot')">Forgot password?</a>
+        </div>
+
+        <button class="auth-btn" id="login-btn" onclick="login()">
+          <span id="login-btn-text">Sign In</span>
+          <span id="login-spinner" class="spinner" style="display:none"></span>
+        </button>
+
+        <div class="divider"><span>or continue with</span></div>
+
+        <div class="social-btns">
+          <button class="social-btn" onclick="socialLogin('Google')">🌐 Google</button>
+          <button class="social-btn" onclick="socialLogin('GitHub')">⚫ GitHub</button>
+        </div>
+
+        <p class="switch-text">
+          Don't have an account?
+          <a onclick="showPage('register')">Create one →</a>
+        </p>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="illustration">
+        <div class="ill-icon">🔐</div>
+        <h2>Secure Authentication</h2>
+        <p>Your data is protected with industry-standard encryption and security practices.</p>
+        <div class="features-list">
+          <div class="feat-item"><span>✅</span> JWT Token Authentication</div>
+          <div class="feat-item"><span>✅</span> Password Hashing (bcrypt)</div>
+          <div class="feat-item"><span>✅</span> Session Management</div>
+          <div class="feat-item"><span>✅</span> Remember Me Feature</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== REGISTER PAGE ========== -->
+  <div class="auth-page" id="page-register">
+    <div class="auth-left">
+      <div class="brand">Auth<span>Flow</span></div>
+      <h1>Create Account</h1>
+      <p>Join thousands of users today</p>
+
+      <div class="form-box">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="reg-fname" placeholder="Shyam"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="reg-lname" placeholder="Ji"/>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="reg-email" placeholder="you@example.com"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="reg-pass" placeholder="Min 8 characters" oninput="checkPasswordStrength(this.value)"/>
+            <button class="toggle-pass" onclick="togglePassword('reg-pass', this)">👁</button>
+          </div>
+          <!-- Password strength indicator -->
+          <div class="strength-bar">
+            <div class="strength-fill" id="strength-fill"></div>
+          </div>
+          <div class="strength-label" id="strength-label"></div>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="reg-confirm" placeholder="Repeat password"/>
+          </div>
+        </div>
+
+        <div class="error-msg" id="reg-error"></div>
+
+        <label class="checkbox-label" style="margin-bottom:16px">
+          <input type="checkbox" id="reg-terms"/>
+          <span>I agree to the <a href="#">Terms & Privacy Policy</a></span>
+        </label>
+
+        <button class="auth-btn" onclick="register()">
+          Create Account →
+        </button>
+
+        <p class="switch-text">
+          Already have an account?
+          <a onclick="showPage('login')">Sign in →</a>
+        </p>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="illustration">
+        <div class="ill-icon">🚀</div>
+        <h2>Get Started Today</h2>
+        <p>Create your account in seconds and unlock access to all features.</p>
+        <div class="features-list">
+          <div class="feat-item"><span>✅</span> Free to get started</div>
+          <div class="feat-item"><span>✅</span> No credit card needed</div>
+          <div class="feat-item"><span>✅</span> Cancel anytime</div>
+          <div class="feat-item"><span>✅</span> 24/7 Support</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FORGOT PASSWORD PAGE ========== -->
+  <div class="auth-page" id="page-forgot">
+    <div class="auth-left">
+      <div class="brand">Auth<span>Flow</span></div>
+      <h1>Reset Password</h1>
+      <p>Enter your email and we'll send you a reset link</p>
+
+      <div class="form-box">
+        <div id="forgot-form">
+          <div class="form-group">
+            <label>Email Address</label>
+            <div class="input-wrap">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="forgot-email" placeholder="you@example.com"/>
+            </div>
+          </div>
+          <div class="error-msg" id="forgot-error"></div>
+          <button class="auth-btn" onclick="sendReset()">Send Reset Link →</button>
+        </div>
+
+        <!-- Success state (shown after sending) -->
+        <div id="forgot-success" style="display:none;text-align:center;padding:20px 0">
+          <div style="font-size:3rem;margin-bottom:16px">📧</div>
+          <h3 style="margin-bottom:8px">Check your email!</h3>
+          <p style="color:var(--muted);font-size:0.9rem;line-height:1.6">
+            We've sent a password reset link to your email address.
+          </p>
+        </div>
+
+        <p class="switch-text" style="margin-top:20px">
+          Remember your password?
+          <a onclick="showPage('login')">Back to Login →</a>
+        </p>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="illustration">
+        <div class="ill-icon">🔑</div>
+        <h2>Account Recovery</h2>
+        <p>We'll help you get back into your account quickly and securely.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== DASHBOARD (SECURED PAGE) ========== -->
+  <div class="auth-page" id="page-dashboard">
+    <!-- Navbar -->
+    <nav class="dash-nav">
+      <div class="brand">Auth<span>Flow</span></div>
+      <div class="nav-right">
+        <div class="nav-user">
+          <div class="nav-avatar" id="nav-avatar">SJ</div>
+          <span id="nav-username">Shyam Ji</span>
+        </div>
+        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+      </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard">
+      <div class="dash-welcome">
+        <div>
+          <h1>Welcome back, <span id="dash-name">Shyam Ji</span>! 👋</h1>
+          <p>You are now logged into your secured dashboard.</p>
+        </div>
+        <div class="session-badge">
+          <span class="session-dot"></span>
+          Session Active
+        </div>
+      </div>
+
+      <!-- Info Cards -->
+      <div class="dash-cards">
+        <div class="dash-card green">
+          <div class="dash-card-icon">✅</div>
+          <div class="dash-card-info">
+            <div class="dash-card-title">Authentication</div>
+            <div class="dash-card-val">Successful</div>
+          </div>
+        </div>
+        <div class="dash-card blue">
+          <div class="dash-card-icon">🔐</div>
+          <div class="dash-card-info">
+            <div class="dash-card-title">Security Level</div>
+            <div class="dash-card-val">High</div>
+          </div>
+        </div>
+        <div class="dash-card purple">
+          <div class="dash-card-icon">⏱️</div>
+          <div class="dash-card-info">
+            <div class="dash-card-title">Session Started</div>
+            <div class="dash-card-val" id="session-time">Just now</div>
+          </div>
+        </div>
+        <div class="dash-card orange">
+          <div class="dash-card-icon">🛡️</div>
+          <div class="dash-card-info">
+            <div class="dash-card-title">Token</div>
+            <div class="dash-card-val">JWT Active</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile Card -->
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profile-avatar">SJ</div>
+          <div class="profile-info">
+            <h3 id="profile-name">Shyam Ji</h3>
+            <p id="profile-email">shyam@example.com</p>
+            <span class="role-badge">👤 User</span>
+          </div>
+        </div>
+        <div class="profile-details">
+          <div class="detail-item">
+            <span class="detail-label">User ID</span>
+            <span class="detail-val" id="profile-id">#USR-001</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Email Verified</span>
+            <span class="detail-val" style="color:var(--green)">✅ Verified</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Last Login</span>
+            <span class="detail-val" id="profile-login">Just now</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Auth Method</span>
+            <span class="detail-val" id="profile-method">Email & Password</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- JWT Token Display -->
+      <div class="token-card">
+        <div class="token-header">
+          <h3>🔑 JWT Token (Simulated)</h3>
+          <button class="copy-btn" onclick="copyToken()">📋 Copy</button>
+        </div>
+        <div class="token-display" id="token-display">
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJVU1ItMDAxIiwiZW1haWwiOiJzaHlhbUBleGFtcGxlLmNvbSIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjoxNzAwMDg2NDAwfQ.xK9mN2pL8qR3sT4uV5wX6yZ7aB8cD9eF0gH1iJ2kL3
+        </div>
+        <p class="token-note">⚠️ Never share your token — it grants access to your account</p>
+      </div>
+
+    </div><!-- .dashboard -->
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <script src="auth.js"></script>
+</body>
+</html>
