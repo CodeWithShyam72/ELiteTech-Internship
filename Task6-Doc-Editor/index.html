@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CollabDocs – Real-Time Document Editor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- ========== LOGIN SCREEN ========== -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-box">
+      <div class="login-logo">Collab<span>Docs</span></div>
+      <p class="login-sub">Real-Time Collaborative Document Editor</p>
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="user-name-input" placeholder="e.g. Shyam Ji" maxlength="24"/>
+      </div>
+      <div class="form-group">
+        <label>Pick Your Color</label>
+        <div class="color-picker" id="color-picker">
+          <div class="color-dot active" data-color="#6c63ff" style="background:#6c63ff" onclick="pickColor(this)"></div>
+          <div class="color-dot" data-color="#ef4444" style="background:#ef4444" onclick="pickColor(this)"></div>
+          <div class="color-dot" data-color="#10b981" style="background:#10b981" onclick="pickColor(this)"></div>
+          <div class="color-dot" data-color="#f59e0b" style="background:#f59e0b" onclick="pickColor(this)"></div>
+          <div class="color-dot" data-color="#ec4899" style="background:#ec4899" onclick="pickColor(this)"></div>
+          <div class="color-dot" data-color="#06b6d4" style="background:#06b6d4" onclick="pickColor(this)"></div>
+        </div>
+      </div>
+      <button class="join-btn" onclick="joinEditor()">Join Editor →</button>
+    </div>
+  </div>
+
+  <!-- ========== MAIN EDITOR ========== -->
+  <div id="editor-app" class="editor-app" style="display:none">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="app-logo">Collab<span>Docs</span></div>
+        <!-- Document title (editable inline) -->
+        <input type="text" id="doc-title" class="doc-title-input" value="Untitled Document" maxlength="60"/>
+        <div class="save-status" id="save-status">✓ Saved</div>
+      </div>
+      <div class="topbar-center">
+        <!-- Toolbar buttons -->
+        <div class="toolbar" id="toolbar">
+          <button class="tb-btn" data-cmd="bold"          title="Bold (Ctrl+B)"><b>B</b></button>
+          <button class="tb-btn" data-cmd="italic"        title="Italic (Ctrl+I)"><i>I</i></button>
+          <button class="tb-btn" data-cmd="underline"     title="Underline (Ctrl+U)"><u>U</u></button>
+          <button class="tb-btn" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+          <div class="tb-divider"></div>
+          <select class="tb-select" id="font-size" onchange="applyFontSize(this.value)">
+            <option value="12">12</option>
+            <option value="14" selected>14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="24">24</option>
+            <option value="32">32</option>
+          </select>
+          <div class="tb-divider"></div>
+          <button class="tb-btn" data-cmd="justifyLeft"   title="Align Left">≡</button>
+          <button class="tb-btn" data-cmd="justifyCenter" title="Center">≡</button>
+          <button class="tb-btn" data-cmd="justifyRight"  title="Align Right">≡</button>
+          <div class="tb-divider"></div>
+          <button class="tb-btn" data-cmd="insertUnorderedList" title="Bullet List">• ≡</button>
+          <button class="tb-btn" data-cmd="insertOrderedList"   title="Numbered List">1. ≡</button>
+          <div class="tb-divider"></div>
+          <button class="tb-btn" data-cmd="undo"  title="Undo (Ctrl+Z)">↩</button>
+          <button class="tb-btn" data-cmd="redo"  title="Redo (Ctrl+Y)">↪</button>
+          <div class="tb-divider"></div>
+          <!-- Heading buttons -->
+          <button class="tb-btn" onclick="applyHeading('h1')" title="Heading 1">H1</button>
+          <button class="tb-btn" onclick="applyHeading('h2')" title="Heading 2">H2</button>
+          <button class="tb-btn" onclick="applyHeading('h3')" title="Heading 3">H3</button>
+          <!-- Highlight -->
+          <button class="tb-btn" onclick="applyHighlight()" title="Highlight">🖊</button>
+          <!-- Clear formatting -->
+          <button class="tb-btn" onclick="clearFormat()" title="Clear Formatting">✕</button>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <!-- Active users avatars -->
+        <div class="active-users" id="active-users"></div>
+        <!-- Share button -->
+        <button class="share-btn" onclick="shareDoc()">🔗 Share</button>
+        <!-- Export button -->
+        <button class="export-btn" onclick="exportDoc()">⬇ Export</button>
+        <!-- Current user avatar -->
+        <div class="current-user-avatar" id="current-user-avatar" title="You"></div>
+      </div>
+    </header>
+
+    <!-- EDITOR BODY -->
+    <div class="editor-body">
+
+      <!-- LEFT SIDEBAR: Document list -->
+      <aside class="left-sidebar">
+        <div class="sidebar-header">
+          <span>📄 Documents</span>
+          <button class="new-doc-btn" onclick="newDocument()">+</button>
+        </div>
+        <div id="doc-list"></div>
+      </aside>
+
+      <!-- MAIN EDITING AREA -->
+      <main class="editor-main">
+        <!-- Page-like container -->
+        <div class="page-container">
+          <div
+            id="editor"
+            class="editor-content"
+            contenteditable="true"
+            spellcheck="true"
+            data-placeholder="Start typing your document here..."
+          ></div>
+        </div>
+
+        <!-- Word count bar -->
+        <div class="word-count-bar">
+          <span id="word-count">0 words</span>
+          <span id="char-count">0 characters</span>
+          <span id="read-time">0 min read</span>
+        </div>
+      </main>
+
+      <!-- RIGHT SIDEBAR: Chat + Activity -->
+      <aside class="right-sidebar">
+        <!-- Tabs -->
+        <div class="rs-tabs">
+          <button class="rs-tab active" onclick="switchRsTab('chat', this)">💬 Chat</button>
+          <button class="rs-tab" onclick="switchRsTab('activity', this)">📋 Activity</button>
+          <button class="rs-tab" onclick="switchRsTab('comments', this)">🗒 Comments</button>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="rs-panel active" id="panel-chat">
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="Type a message…"
+                   onkeydown="if(event.key==='Enter') sendChat()"/>
+            <button class="chat-send-btn" onclick="sendChat()">➤</button>
+          </div>
+        </div>
+
+        <!-- Activity Panel -->
+        <div class="rs-panel" id="panel-activity">
+          <div class="activity-log" id="activity-log"></div>
+        </div>
+
+        <!-- Comments Panel -->
+        <div class="rs-panel" id="panel-comments">
+          <div id="comments-list"></div>
+          <button class="add-comment-btn" onclick="addComment()">+ Add Comment</button>
+        </div>
+      </aside>
+
+    </div><!-- .editor-body -->
+  </div><!-- .editor-app -->
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <!-- Share Modal -->
+  <div id="share-modal" class="modal-overlay" style="display:none" onclick="closeShare(event)">
+    <div class="modal-box">
+      <h3>🔗 Share Document</h3>
+      <p>Anyone with this link can view and edit the document</p>
+      <div class="share-link-row">
+        <input type="text" id="share-link-input" readonly/>
+        <button onclick="copyShareLink()">📋 Copy</button>
+      </div>
+      <div class="share-permissions">
+        <label class="radio-label"><input type="radio" name="perm" checked/> Anyone can edit</label>
+        <label class="radio-label"><input type="radio" name="perm"/> View only</label>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
